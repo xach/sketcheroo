@@ -9,5 +9,6 @@
   :serial t
   :components ((:file "package")
                (:file "primitives")
+               (:file "colors")
                (:file "specials")))
 
