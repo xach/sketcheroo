@@ -1,6 +1,13 @@
 ;;;; primitives.lisp
 
-(in-package #:v3cto)
+(in-package #:sketcheroo)
+
+(define-condition geometry-error (simple-error) ())
+
+(defun geometry-error (message-or-control &rest arguments)
+  (error 'geometry-error
+         :format-control (if arguments "~{~}" "~A")
+         :format-arguments (list* message-or-control arguments)))
 
 (defgeneric combine (object1 object2)
   (:documentation "Return the combination of two objects."))
@@ -155,9 +162,43 @@
   (and (eqv (minpoint r1) (minpoint r2))
        (eqv (maxpoint r1) (maxpoint r2))))
 
+(defmethod width ((rect rect))
+  (- (x (maxpoint rect))
+     (x (minpoint rect))))
+
+(defmethod height ((rect rect))
+  (- (y (maxpoint rect))
+     (y (minpoint rect))))
+
 (defmethod pretty-components ((rect rect))
   (format nil "~Ax~A at ~A,~A"
           (width rect)
           (height rect)
           (x rect)
           (y rect)))
+
+(defgeneric rect (xmin xmax ymin ymax)
+  (:method (xmin xmax ymin ymax)
+    (make-instance 'rect
+                   :minpoint (point xmin ymin)
+                   :maxpoint (point xmax ymax))))
+
+(defmethod combine ((p1 point) (p2 point))
+  (let ((x1 (x p1))
+        (y1 (y p1))
+        (x2 (x p2))
+        (y2 (y p2)))
+    (rect (min x1 x1) (max x1 x2)
+          (min y1 y2) (max y1 y2))))
+
+(defmethod initialize-instance :before ((rect rect) &key minpoint maxpoint
+                                                      &allow-other-keys)
+  (unless (and (<= (x minpoint) (x maxpoint))
+               (<= (y minpoint) (y maxpoint)))
+    (geometry-error "Minpoint and maxpoint are not oriented properly")))
+
+(defgeneric point-rect (minpoint maxpoint)
+  (:method (minpoint maxpoint)
+    (make-instance 'rect
+                   :minpoint minpoint
+                   :maxpoint maxpoint)))
