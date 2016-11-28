@@ -1,5 +1,5 @@
 ;;;; package.lisp
 
-(defpackage #:v3cto
+(defpackage #:sketcheroo
   (:use #:cl))
 
