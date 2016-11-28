@@ -8,5 +8,6 @@
                #:cl-pdf)
   :serial t
   :components ((:file "package")
-               (:file "primitives")))
+               (:file "primitives")
+               (:file "specials")))
 
