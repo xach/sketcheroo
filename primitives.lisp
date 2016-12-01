@@ -37,6 +37,12 @@
 (defgeneric rect-canvas (rect)
   (:documentation "Return the canvas needed to fully enclose RECT."))
 
+(defgeneric expand (rect amount)
+  (:documentation "Expand RECT by AMOUNT, in every direction."))
+
+(defgeneric contract (rect amount)
+  (:documentation "Contract RECT by AMOUNT, in every direction."))
+
 (defmethod point-designator (object))
 
 (defgeneric x (object)
