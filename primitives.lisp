@@ -72,6 +72,19 @@
 
 (defgeneric midpoint (object1 object2))
 
+(defgeneric xmin (object)
+  (:documentation "Return the X component of the minimum point of
+  OBJECT."))
+
+(defgeneric ymin (object)
+  (:documentation "Return the Y component of the minimum point of OBJECT."))
+
+(defgeneric xmax (object)
+  (:documentation "Return the X component of the maximum point of OBJECT."))
+
+(defgeneric ymax (object)
+  (:documentation "Return the Y component of the maximum point of OBJECT."))
+
 (defclass geometric () ())
 
 (defmethod pretty-components (object))
@@ -183,8 +196,8 @@
           (x rect)
           (y rect)))
 
-(defgeneric rect (xmin xmax ymin ymax)
-  (:method (xmin xmax ymin ymax)
+(defgeneric rect (xmin ymin xmax ymax)
+  (:method (xmin ymin xmax ymax)
     (make-instance 'rect
                    :minpoint (point xmin ymin)
                    :maxpoint (point xmax ymax))))
@@ -208,3 +221,22 @@
     (make-instance 'rect
                    :minpoint minpoint
                    :maxpoint maxpoint)))
+
+(defmethod xmin ((rect rect))
+  (x (minpoint rect)))
+
+(defmethod ymin ((rect rect))
+  (y (minpoint rect)))
+
+(defmethod xmax ((rect rect))
+  (x (maxpoint rect)))
+
+(defmethod ymax ((rect rect))
+  (y (maxpoint rect)))
+
+(defmethod expand ((rect rect) amount)
+  (rect (- (xmin rect) amount)
+        (- (ymin rect) amount)
+        (+ (xmax rect) amount)
+        (+ (ymax rect) amount)))
+
